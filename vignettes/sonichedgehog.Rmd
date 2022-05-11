@@ -27,14 +27,24 @@ library(sonichedgehog)
 
 
 ## Package Datasets\
-For this project, we have included an example dataset to use with our PCMs package, **sonic**, sonic is a dataset of Sonic hedgehog signalling molecule (Shh) orthologs from species of order Carnivora, a group of placental mammals specialized in eating flesh. The outgroup of this dataset is the insectivore *Erinaceus europaeus* (western european hedgehog). These orthologs were retrieved from NCBI gene database. This gene plays a very important role in body patterning of the ventral neural tube and anterior-posterior limb axes during embryogenesis in vertebrates and invertebrates. Included in it are the following for each species, 25 total: GeneID, GeneSymbol, Scientific_name, Common_name, Description of the polymer molecule, RefSeq_Transcript_Accessions, Base_pairs (count) in gene,  RefSeq_Protein_Accessions, Amino_acids (count) in protein, and Peptide_Sequences from the respective protein accession. Additionally, the amino acid (peptide) sequences for each species Shh is included in fasta format in the file **Shh_fasta**. This file is a more accessible way to use the peptide sequences from the sonic dataset as an example.\
+A.`sonic`\
+For this project, we have included an example dataset to use with our PCMs package, **sonic**, sonic is a dataset of Sonic hedgehog signalling molecule (Shh) orthologs from species of order Carnivora, a group of placental mammals specialized in eating flesh. The outgroup of this dataset is the insectivore *Erinaceus europaeus* (western european hedgehog). These orthologs were retrieved from NCBI gene database. This gene plays a very important role in body patterning of the ventral neural tube and anterior-posterior limb axes during embryogenesis in vertebrates and invertebrates. Included in it are the following for each species, 25 total: GeneID, GeneSymbol, Scientific_name, Common_name, Description of the polymer molecule, RefSeq_Transcript_Accessions, Base_pairs (count) in gene,  RefSeq_Protein_Accessions, Amino_acids (count) in protein, and Peptide_Sequences from the respective protein accession.\
 ```{r explain functions (j)}
+sonic #prints the included sonic dataset
+
 #load in the data
-f_name <- "https://raw.githubusercontent.com/jyhrehjohnson/cornett-johnson_ADA_GroupProject/main/SHH_orthologs_Carnivora.csv"
+f_name <- "https://raw.githubusercontent.com/slcornett/sonichedgehog/master/data/sonic.csv"
 
 #use the function to read in the data and create the r dataset
-sonic <- read_file(f_name)
-head(sonic)
+sonic.csv <- read_file(f_name)
+head(sonic.csv)
+```
+
+B. `Shh_fasta`\
+Additionally, the amino acid (peptide) sequences for each species Shh singaling molecule is included in fasta format in the file **Shh_fasta**. This sequences are the same as those included in `sonic`, but in the .fasta format. This file is a more accessible way to use the peptide sequences from the sonic dataset as an example.\
+```{r Shh_fasta}
+Shh_fasta # shows the dataset
+class(Shh_fasta) # "AAStringSet"
 ```
 
 # Phylogenetic analysis\
@@ -44,21 +54,22 @@ For this example, we will be using the sonic fasta file included in this package
 To do this, we first assign the link to the raw file to a value, then, using the `readAAStringSet()` function from the {Biostrings} package, convert the fasta file to an amino acid string set for each species included in the file (25 total). You can choose to keep the fasta format for the data with the `format = "fasta"` argument.
 ```{r step 1 by hand}
 # read in sequences from .fasta file
-fasta <- "https://raw.githubusercontent.com/jyhrehjohnson/cornett-johnson_ADA_GroupProject/main/SHH_Carnivora.fasta"
+f <- "https://raw.githubusercontent.com/slcornett/sonichedgehog/master/data/Shh_fasta.fasta"
 #for reading multiple AA sequences from msa package
-file <- readAAStringSet(fasta, format = "fasta", use.names = TRUE) # format: biostrings, AAString set
-file # shows the width of each 
+fasta <- readAAStringSet(f, format = "fasta", use.names = TRUE) # format: biostrings, AAString set
+fasta # shows raw file details: for each, shows length of the sequence, the sequence, and seq name
 ```
 We can confirm our file was correctly converted using the base ***R*** `class()` function. The class should be "AAStringSet", attributed to the "Biostrings" package.
-```{r check class}
+```{r step 1 check class}
 # EXPECTED OUTPUT:
 # "AAStringSet"
 # attr(,"package")
 # "Biostrings"
-class(file)
+class(fasta)
 ```
 
 
+**DO WE STILL NEED THIS FUNCTION SINCE IT IS BUILT INTO THE ALIGN FUNCTION?**
 We can also do the above using one of our built in functions: `f_file()`
 ```{r f_file}
 # read in sequences from .fasta file

@@ -29,25 +29,27 @@ read_file <- function(f_name){
 # fxn to read in multiple AA sequences----
 #' @title f_file
 #' @description
-#' @param - one line for each parameter in our function
-#' @keywords - to aid in searching functions
-#' @export - makes the function available for others to use when your package is loaded
+#' @param # one line for each parameter in our function
+#' @keywords # to aid in searching functions
+#' @export # makes the function available for others to use when your package is loaded
 #' @examples - sample code
-f_file <- function(fast_file){
+f_file <- function(file){
   #for reading multiple AA sequences from msa package
-  fast <- Biostrings::readAAStringSet(fast_file, format = "fasta", use.names = TRUE) # format: biostrings, AAString set
+  fast <- Biostrings::readAAStringSet(file, format = "fasta", use.names = TRUE) # format: biostrings, AAString set
   return(fast)
 }
 
 # building a function to make a polypeptide (Amino Acid) sequence phylogenetic tree from data in fasta file ----
-#' @title read_file
-#' @description
-#' @param # one line for each parameter in our function
-#' @keywords # to aid in searching functions
+#' @title pcms_AlignAA
+#' @description Amino Acid multiple sequence alignment using the MUSCLE algorithm of fasta formatted data
+#' @param file a fasta file assigned to a vector in your environment
+#' @keywords multiple sequence alignment, fasta, peptide, AA alignment
 #' @export # makes the function available for others to use when your package is loaded
-#' @examples # sample code
+#' @examples using the built-in Shh_fasta data of sonic hedgehog signal molecule orthologs
+#' file <- "link to raw data on git hub"
+#' pcms_AlignAA(file) # the output of this will be the sequences aligned by the MUSCLE algorithm
 pcms_AlignAA <- function(file){
-  #for reading multiple AA sequences from msa package
+  #for reading multiple AA sequences from biostrings package
   fas <- Biostrings::readAAStringSet(file, format = "fasta", use.names = TRUE)
   # align the fasta file using MUSCLE algorithm: multiple sequence alignment from msa package
   fas_msa <- fas %>% msa::msa(method = c("Muscle"), type = "protein", order=c("aligned", "input"))
