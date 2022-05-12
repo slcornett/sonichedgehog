@@ -31,13 +31,18 @@ library(sonichedgehog)
 
 ## Package Datasets\
 A.`sonic`\
-For this project, we have included an example dataset to use with our PCMs package, **sonic**, sonic is a dataset of Sonic hedgehog signalling molecule (Shh) orthologs from species of order Carnivora, a group of placental mammals specialized in eating flesh. The outgroup of this dataset is the insectivore *Erinaceus europaeus* (western european hedgehog). These orthologs were retrieved from NCBI gene database. This gene plays a very important role in body patterning of the ventral neural tube and anterior-posterior limb axes during embryogenesis in vertebrates and invertebrates. Included in it are the following for each species, 25 total: GeneID, GeneSymbol, Scientific_name, Common_name, Description of the polymer molecule, RefSeq_Transcript_Accessions, Base_pairs (count) in gene,  RefSeq_Protein_Accessions, Amino_acids (count) in protein, and Peptide_Sequences from the respective protein accession.\
-```{r explain functions (j)}
+For this project, we have included an example dataset to use with our PCMs package, **sonic**, sonic is a dataset of Sonic hedgehog signalling molecule (Shh) orthologs from species of order Carnivora, a group of placental mammals specialized in eating flesh. The outgroup of this dataset is the insectivore *Erinaceus europaeus* (Western European hedgehog). These orthologs were retrieved from NCBI gene database. This gene plays a very important role in body patterning of the ventral neural tube and anterior-posterior limb axes during embryogenesis in vertebrates and invertebrates. Included in it are the following for each species, 25 total: GeneID, GeneSymbol, Scientific_name, Common_name, Description of the polymer molecule, RefSeq_Transcript_Accessions, Base_pairs (count) in gene,  RefSeq_Protein_Accessions, Amino_acids (count) in protein, and Peptide_Sequences from the respective protein accession.\
+
+
+```{r}
 sonic #prints the included sonic dataset
 
 #ldata ready to load also included in the package
 sonic.f # sonic the raw file git link (.f)
+```
 
+As an alternative to the built-in `sonic` dataset, you can also use a function to read in the data. The function, read_file(), used in the following section of code reads in the raw/.csv file data necessary for the package. This function makes it easier for the user to load in data and cleans up the code. The function uses the f <- "file_link" & d <- read_csv() code.
+```{r}
 #use the function to read in the data and create the r dataset
 sonic.csv <- read_file(sonic.f)
 head(sonic.csv) # same as sonic
@@ -72,16 +77,6 @@ We can confirm our file was correctly converted using the base ***R*** `class()`
 class(Shh_fast.f)
 ```
 
-
-**DO WE STILL NEED THIS FUNCTION SINCE IT IS BUILT INTO THE ALIGN FUNCTION?**
-We can also do the above using one of our built in functions: `f_file()`
-```{r f_file}
-# read in sequences from .fasta file
-Shh_fast.f
-Shh.fast <- f_file(Shh_fast.f)
-```
-
-
 **2. Multiple Sequence Alignment (MSA)**\
 We next need to conduct a multiple sequence alignment (msa)--the alignment of 3 or more sequences of genetic material (DNA, RNA, or protein) to determine homology and evolutionary relationships--on our Shh amino acid sequences (from `Shh_fasta` built into the package). We can do this using the `msa()` function from the {msa} package (package available from BioConductor; Bodenhofer et al., 2015). This function gives us the option to use one of three different algorithms, depending on the type of sequences being aligned. We will use the *MUSCLE* algorithm for our Shh protein sequences (from `Shh_fasta`) as this algorithm is especially good with proteins and our sequences are a medium/small size. Other algorithms options in the `msa()` function include *ClustalW* and *ClustalOmega*, both of which are good for all types of genetic material, especially those with medium to long sequences and many sequences being compared. You can learn more about multiple sequence alignments at the EMBL European Bioinformatics Institute's website: <https://www.ebi.ac.uk/Tools/msa/>.\
 In this function, we define the method as `method = c("Muscle")` since we are using the *MUSCLE* algorithm, and the type of sequence as `type = "protein`. The order argument refers to the order of the sequences in the output object. Here, the sequences will be ordered by how aligned they are then the input order (ie their order in the fasta file): `order = c("aligned", "input")`.\
@@ -112,6 +107,7 @@ The rest of the by-hand steps will use functions from the package {ape}: {ape}, 
 Here we will be storing the now `MsaAAMultipleAlignment` data as a matrix in an AAbin (amino acid bin) using the function `as.AAbin()`from the package {ape}. This function changes the class of the multiple sequence alignment data to class `AAbin`.\
 The argument `show.aa =` will show the AA symbols or not (FALSE by default), and `check.names =` is a logical to check the row names before binding the sequences to the species names (the default is to only keep sequences/names with no missing data, and those with missing data will be dropped.) Since our data has already been aligned, they are all the same length, so we want `check.names = TRUE` (Paradis & Schliep, 2019).\
 ```{r Step 3 AAbin}
+library(ape)
 fas_AAbin <- as.AAbin(fas_msa, show.aa = TRUE, check.names = TRUE)
 fas_AAbin # prints the details of the info stored in the AAbin matrix
 class(fas_AAbin) # AAbin
@@ -150,6 +146,8 @@ tree # updated details about the phylogenetic tree (rooted on the OUTGROUP)
 **6. Plotting Tree with ggtree**\
 You have many options when it comes to plotting a phylogenetic (class = `phylo`) tree. You may opt for the very simple base `plot()` function.\
 ```{r tree plot}
+library(ggtree)
+library(ggplot2)
 # base R plot
 plot(tree)
 
@@ -175,21 +173,30 @@ class(pat) # "MsaAAMultipleAlignment"
 
 ### Running and Plotting PCMs
 ```{r}
-ptree <- treeAA(pat)
+ptree <- phyloAA(pat)
 ptree 
 class(ptree)
-# is there a way to use return without stopping the function? or is there a simple way to make a step of a function extractable without it being the last step of the function?
+
+# Add outgroup at node as Erinaceus_europaeus_Shh_OUTGROUP
+# by first viewing the tree$tip.label for all 26 tips in the tree, we can see which node the outgroup is on
+# make a vecotr of the tip.label that is the outgroup
+outgroup <- ptree$tip.label[2]
+# root the tree on the outgroup
+ptree <- root(ptree, outgroup = outgroup, node = NULL, resolve.root = TRUE)
+is.rooted(ptree) #TRUE
+ptree # updated details about the phylogenetic tree (rooted on the OUTGROUP)
 ```
 
-
-## Plotting PCMs\
-
-**Plotting Maximum Likelihood with plotTree**
+**Plotting with treeAA function**
 ```{r}
-pt <- plot_Tree(tree) # explain function (J)
+tree_plot <- treeAA(ptree)
+tree_plot
 ```
 
-## Interpreting PCMs Plots
+**Plotting Maximum Likelihood with plotTree function**
+```{r}
+pt <- plot_Tree(tree)
+```
 
 ## References\ 
 Bodenhofer, U., Bonatesta, E., Horejš-Kainrath, C., & Hochreiter, S. (2015). Msa: An r package for multiple sequence alignment. *Bioinformatics*, btv494. <https://doi.org/10.1093/bioinformatics/btv494>.\
