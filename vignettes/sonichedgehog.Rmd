@@ -91,7 +91,7 @@ library(msa)
 fas_msa <-  msa(file, method = c("Muscle"), cluster = "default", type = "protein", verbose = TRUE) # if you run this operation more than 16 times in a single session, will stop working (SetIdCount Error). To fix this, save everything, close the r-session, then re-open the r-session. It will work again after this.
 print(fas_msa, showConsensus = TRUE, show = "complete")
 ```
-2A. check the class of the msa output:
+**2A.** check the class of the msa output:
 ```{r check msa class}
 # EXPECTED OUTPUT:
 # "MsaAAMultipleAlignment"
