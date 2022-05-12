@@ -35,40 +35,41 @@ For this project, we have included an example dataset to use with our PCMs packa
 ```{r explain functions (j)}
 sonic #prints the included sonic dataset
 
-#load in the data
-f_name <- "https://raw.githubusercontent.com/slcornett/sonichedgehog/master/data/sonic.csv"
+#ldata ready to load also included in the package
+sonic.f # sonic the raw file git link (.f)
 
 #use the function to read in the data and create the r dataset
-sonic.csv <- read_file(f_name)
-head(sonic.csv)
+sonic.csv <- read_file(sonic.f)
+head(sonic.csv) # same as sonic
 ```
 
 B. `Shh_fasta`\
 Additionally, the amino acid (peptide) sequences for each species Shh singaling molecule is included in fasta format in the file **Shh_fasta**. This sequences are the same as those included in `sonic`, but in the .fasta format. This file is a more accessible way to use the peptide sequences from the sonic dataset as an example.\
 ```{r Shh_fasta}
-Shh_fasta # shows the dataset
+Shh_fasta # shows the dataset inclused in the package
 class(Shh_fasta) # "AAStringSet"
+
+
+Shh_fasta.f #raw file git link (.f)
 ```
 
 # Phylogenetic analysis\
 ## **By Hand**\
 For this example, we will be using the sonic fasta file included in this package (**Shh_fasta**).\
 **1. convert the .fasta file data to a string of amino acids (AA), i.e., a literal polypeptide chain in code.**\
-To do this, we first assign the link to the raw file to a value, then, using the `readAAStringSet()` function from the {Biostrings} package, convert the fasta file to an amino acid string set for each species included in the file (25 total). You can choose to keep the fasta format for the data with the `format = "fasta"` argument.
+To do this, we first assign the link to the raw file to a value, then, using the `readAAStringSet()` function from the {Biostrings} package, convert the fasta file to an amino acid string set for each species included in the file (25 total). You can choose to keep the fasta format for the data with the `format = "fasta"` argument.\
 ```{r step 1 by hand}
-# read in sequences from .fasta file
-f <- "https://raw.githubusercontent.com/slcornett/sonichedgehog/master/data/Shh_fasta.fasta"
 #for reading multiple AA sequences from msa package
-fasta <- readAAStringSet(f, format = "fasta", use.names = TRUE) # format: biostrings, AAString set
-fasta # shows raw file details: for each, shows length of the sequence, the sequence, and seq name
+Shh_fast.f <- readAAStringSet(Shh_fasta.f, format = "fasta", use.names = TRUE) # format: biostrings, AAString set
+Shh_fast.f # shows raw file details: for each, shows length of the sequence, the sequence, and seq name
 ```
-We can confirm our file was correctly converted using the base ***R*** `class()` function. The class should be "AAStringSet", attributed to the "Biostrings" package.
+We can confirm our file was correctly converted using the base ***R*** `class()` function. The class should be "AAStringSet", attributed to the "Biostrings" package.\
 ```{r step 1 check class}
 # EXPECTED OUTPUT:
 # "AAStringSet"
 # attr(,"package")
 # "Biostrings"
-class(fasta)
+class(Shh_fast.f)
 ```
 
 
@@ -76,22 +77,25 @@ class(fasta)
 We can also do the above using one of our built in functions: `f_file()`
 ```{r f_file}
 # read in sequences from .fasta file
-fast_file <- "https://raw.githubusercontent.com/jyhrehjohnson/cornett-johnson_ADA_GroupProject/main/SHH_Carnivora.fasta"
-fast <- f_file(fast_file)
+Shh_fast.f
+Shh.fast <- f_file(Shh_fast.f)
 ```
 
 
 **2. Multiple Sequence Alignment (MSA)**\
-We next need to conduct a multiple sequence alignment (msa)--the alignment of 3 or more sequences of genetic material (DNA, RNA, or protein) to determine homology and evolutionary relationships--on our Shh amino acid sequences. We can do this using the `msa()` function from the {msa} package (package available from BioConductor; Bodenhofer et al., 2015). This function gives us the option to use one of three different algorithms, depending on the type of sequences being aligned. We will use the *MUSCLE* algorithm for our Shh protein sequences as this algorithm is especially good with proteins and our sequences are a medium/small size. Other algorithms options in the `msa()` function include *ClustalW* and *ClustalOmega*, both of which are good for all types of genetic material, especially those with medium to long sequences and many sequences being compared. You can learn more about multiple sequence alignments at the EMBL European Bioinformatics Institute's website: <https://www.ebi.ac.uk/Tools/msa/>.\
-In this function, we define the method as `method = c("Muscle")` since we are using the *MUSCLE* algorithm, and the type of sequence as `type = "protein`. The order argument refers to the order of the sequences in the output object. Here, the sequences will be ordered by how aligned they are then the input order (ie their order in the fasta file): `order = c("aligned", "input")`.
+We next need to conduct a multiple sequence alignment (msa)--the alignment of 3 or more sequences of genetic material (DNA, RNA, or protein) to determine homology and evolutionary relationships--on our Shh amino acid sequences (from `Shh_fasta` built into the package). We can do this using the `msa()` function from the {msa} package (package available from BioConductor; Bodenhofer et al., 2015). This function gives us the option to use one of three different algorithms, depending on the type of sequences being aligned. We will use the *MUSCLE* algorithm for our Shh protein sequences (from `Shh_fasta`) as this algorithm is especially good with proteins and our sequences are a medium/small size. Other algorithms options in the `msa()` function include *ClustalW* and *ClustalOmega*, both of which are good for all types of genetic material, especially those with medium to long sequences and many sequences being compared. You can learn more about multiple sequence alignments at the EMBL European Bioinformatics Institute's website: <https://www.ebi.ac.uk/Tools/msa/>.\
+In this function, we define the method as `method = c("Muscle")` since we are using the *MUSCLE* algorithm, and the type of sequence as `type = "protein`. The order argument refers to the order of the sequences in the output object. Here, the sequences will be ordered by how aligned they are then the input order (ie their order in the fasta file): `order = c("aligned", "input")`.\
 ```{r step 2 by hand msa}
 library(msa)
 # multiple sequence alignment from msa package 
 #align the fasta file using MUSCLE algorithm
-fas_msa <-  msa(file, method = c("Muscle"), cluster = "default", type = "protein", verbose = TRUE) # if you run this operation more than 16 times in a single session, will stop working (SetIdCount Error). To fix this, save everything, close the r-session, then re-open the r-session. It will work again after this.
-print(fas_msa, showConsensus = TRUE, show = "complete")
+fas_msa <-  msa(Shh_fasta, method = c("Muscle"), cluster = "default", type = "protein", verbose = TRUE) 
+# print the complete results, with the consensus sequence
+print(fas_msa, showConsensus = TRUE, show = "complete") 
 ```
-**2A.** check the class of the msa output:
+>NOTE: if you run the `msa()` function more than 16 times in a single session (defined in the function as maxiter, for maxiumum iterations), will stop working (*SetIdCount Error*). To fix this, save everything, close the r-session, then re-open the r-session. It will work again after this.\
+
+**2A.** check the class of the msa output:\
 ```{r check msa class}
 # EXPECTED OUTPUT:
 # "MsaAAMultipleAlignment"
@@ -99,16 +103,15 @@ print(fas_msa, showConsensus = TRUE, show = "complete")
 # "msa"
 class(fas_msa)
 #we no longer need the msa package so can detach it
-detach(package:msa)
 ```
 
 
 The rest of the by-hand steps will use functions from the package {ape}: {ape}, Analyses of Phylogenetics and Evolution, is a really great package for writing, manipulating DNA and Amino Acid sequences for phylogenetic analysis (Paradis & Schliep, 2019).\
 
 **3. Storing data in an bin**\
-Here we will be storing the now `MsaAAMultipleAlignment` data as a matrix in an AAbin (amino acid bin) using the function `as.AAbin()`from the package {ape}. This function changes the class of the multiple sequence alignment data to class `AAbin`. The argument `show.aa =` will show the AA symbols or not (FALSE by default), and `check.names =` is a logical to check the row names before binding the sequences to the species names (the default is to only keep sequences/names with no missing data, and those with missing data will be dropped.) Since our data has already been aligned, they are all the same length, so we want  `check.names = TRUE` (Paradis & Schliep, 2019).
+Here we will be storing the now `MsaAAMultipleAlignment` data as a matrix in an AAbin (amino acid bin) using the function `as.AAbin()`from the package {ape}. This function changes the class of the multiple sequence alignment data to class `AAbin`.\
+The argument `show.aa =` will show the AA symbols or not (FALSE by default), and `check.names =` is a logical to check the row names before binding the sequences to the species names (the default is to only keep sequences/names with no missing data, and those with missing data will be dropped.) Since our data has already been aligned, they are all the same length, so we want `check.names = TRUE` (Paradis & Schliep, 2019).\
 ```{r Step 3 AAbin}
-library(ape)
 fas_AAbin <- as.AAbin(fas_msa, show.aa = TRUE, check.names = TRUE)
 fas_AAbin # prints the details of the info stored in the AAbin matrix
 class(fas_AAbin) # AAbin
@@ -116,9 +119,9 @@ class(fas_AAbin) # AAbin
 
 
 **4. Calculating the phylogenetic distances between sequences**\
-In order to to make a phylogenetic tree with our data, we need to calculate the number of AA differences between each pair of sequences in a matrix. **NOTE:** This function can only be run on data in an "AAbin". Within this function are two arguments:\
+In order to to make a phylogenetic tree with our data, we need to calculate the number of AA differences between each pair of sequences in a matrix. These distances will inform the branch lengths of our phylogenetic tree. **NOTE:** This function can only be run on data in an "AAbin". Within this function are two arguments:\
 - ` pairwise.deletion =` a logical indicating whether to delete the sites with missing data in a pairwise way (by default, sites with at least one missing data for all sequences are deleted), and\
-- `scaled =` a logical value specifying whether to scale the number of AA differences by the sequence length (Paradis & Schliep, 2019).
+- `scaled =` a logical value specifying whether to scale the number of AA differences by the sequence length (Paradis & Schliep, 2019).\
 ```{r AA distances}
 dist_fas_AAbin <- dist.aa(fas_AAbin, pairwise.deletion = TRUE, scaled = TRUE)
 dist_fas_AAbin #prints the scaled distances matrix
@@ -126,11 +129,11 @@ class(dist_fas_AAbin) #dist matrix
 ```
 
 
-**5. Make a phylogenetic tree using the Neighbor-Joining Method**
-T
-```{r tree}
+**5. Make a phylogenetic tree using the Neighbor-Joining Method**\
+The Neighbor-Joining algorithm approximates the least squares trees (minimum evolution), and clusters nodes similar to each other and dissimilar from other clusters, based on the distances calculated in the last step (Saitou & Nei, 1987).\
+```{r nj tree}
 tree <- nj(dist_fas_AAbin)
-tree # details about the phylogenetic tree
+tree # details about the phylogenetic tree (unrooted)
 class(tree) #phylo 
 
 # Add outgroup at node as Erinaceus_europaeus_Shh_OUTGROUP
@@ -140,27 +143,17 @@ outgroup <- tree$tip.label[2]
 # root the tree on the outgroup
 tree <- root(tree, outgroup = outgroup, node = NULL, resolve.root = TRUE)
 is.rooted(tree) #TRUE
-tree # updated details about the phylogenetic tree
-```
-
-### **Using {sonichedgehog} functions** 
-```{r pat}
-pat <- pcms_AlignAA(fast_file)
-pat # prints the MUSCLE alignment
-class(pat) # "MsaAAMultipleAlignment"
-```
-
-#### Running PCMs
-```{r}
-ptree <- pcms_treeAA(pat)
-ptree
-class(ptree)
+tree # updated details about the phylogenetic tree (rooted on the OUTGROUP)
 ```
 
 
-## Plotting PCMs\
-**Plotting Neighbor Joining with ggtree**
-```{r}
+**6. Plotting Tree with ggtree**\
+You have many options when it comes to plotting a phylogenetic (class = `phylo`) tree. You may opt for the very simple base `plot()` function.\
+```{r tree plot}
+# base R plot
+plot(tree)
+
+# ggtree, an extension package of ggplot2
 ggt <- ggtree(tree, cex = 1, aes(color = branch.length), layout = "roundrect") +
   scale_color_continuous(high = 'green', low = 'darkgreen') + 
   #scale_color_continuous(type = "viridis") +
@@ -169,6 +162,28 @@ ggt <- ggtree(tree, cex = 1, aes(color = branch.length), layout = "roundrect") +
   geom_treescale(x = 0, y = 0, color = "black", fontsize =3)
 ggt
 ```
+
+
+## **Using {sonichedgehog} functions**\
+So many steps, right? Wouldn't it be nice to do less steps and arrive at the same endpoint? Here we are using the `Shh_fasta.f`, file (class = "character") version of `Shh_fasta` included in this package to run it through the {sonichedgehog} function `AlignAA()`. This function reads in converts the raw fasta file to an AAstring, does a multiple sequence alignment using the MUSCLE algorithm on the fasta data, then prints the complete set of aligned AA seqeuences with the species names and consensus sequence. Essentially, this combines by-hand steps 1-2. 
+```{r pat}
+# read in the vector the raw git link or dataset is assigned to
+pat <- AlignAA(Shh_fasta.f)
+pat # prints the MUSCLE alignment 
+class(pat) # "MsaAAMultipleAlignment"
+```
+
+### Running and Plotting PCMs
+```{r}
+ptree <- treeAA(pat)
+ptree 
+class(ptree)
+# is there a way to use return without stopping the function? or is there a simple way to make a step of a function extractable without it being the last step of the function?
+```
+
+
+## Plotting PCMs\
+
 **Plotting Maximum Likelihood with plotTree**
 ```{r}
 pt <- plot_Tree(tree) # explain function (J)
@@ -183,9 +198,11 @@ Bodenhofer, U., Bonatesta, E., Horejš-Kainrath, C., & Hochreiter, S. (2015). Ms
 
 Pennell, M. W., & Harmon, L. J. (2013). An integrative view of phylogenetic comparative methods: Connections to population genetics, community ecology, and paleobiology: Integrative comparative methods. *Annals of the New York Academy of Sciences, 1289*(1), 90–105. <https://doi.org/10.1111/nyas.12157>.\
 
-Paradis, E., & Schliep, K. (2019). Ape 5. 0: An environment for modern phylogenetics and evolutionary analyses in r. *Bioinformatics, 35*(3), 526–528. <https://doi.org/10.1093/bioinformatics/bty633>\
-
 NCBI. SHH orthologs. (2022). [Database]. NCBI; National Library of Medicine. <https://www.ncbi.nlm.nih.gov/gene/6469/ortholog/>.\
+
+Paradis, E., & Schliep, K. (2019). Ape 5.0: An environment for modern phylogenetics and evolutionary analyses in r. *Bioinformatics, 35*(3), 526–528. <https://doi.org/10.1093/bioinformatics/bty633>\
+
+Saitou, N., & Nei, M. (1987). The neighbor-joining method: A new method for reconstructing phylogenetic trees. *Molecular Biology and Evolution, 4*(4), 406–425. <https://doi.org/10.1093/oxfordjournals.molbev.a040454>.\
 
 Toparslan, E., Karabag, K., & Bilge, U. (2020). A workflow with R: Phylogenetic analyses and visualizations using mitochondrial cytochrome b gene sequences. *PLOS ONE, 15*(12), e0243927. <https://doi.org/10.1371/journal.pone.0243927>\
 
