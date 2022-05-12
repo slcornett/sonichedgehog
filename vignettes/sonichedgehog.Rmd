@@ -145,7 +145,7 @@ tree # updated details about the phylogenetic tree (rooted on the OUTGROUP)
 
 **6. Plotting Tree with ggtree**\
 You have many options when it comes to plotting a phylogenetic (class = `phylo`) tree. You may opt for the very simple base `plot()` function.\
-```{r tree plot}
+```{r tree plot, fig.height=8, fig.width=8}
 library(ggtree)
 library(ggplot2)
 # base R plot

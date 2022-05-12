@@ -57,7 +57,6 @@ AlignAA <- function(Shh_fasta){
   fas <- Biostrings::readAAStringSet(Shh_fasta, format = "fasta", use.names = TRUE)
   # align the fasta file using MUSCLE algorithm: multiple sequence alignment from msa package
   fas_msa <- fas %>% msa::msa(method = c("Muscle"), type = "protein", order=c("aligned", "input"))
-  fas_msa <- fas %>% msa::msa(method = c("Muscle"), type = "protein", order=c("aligned", "input"))
   print(fas_msa, showConsensus = TRUE, show = "complete")
   return(fas_msa)
 }
@@ -90,9 +89,9 @@ phyloAA <- function(fas_msa){ #the input to this function is the out put of the 
 treeAA <- function(ptree){
   class(ptree) == "phylo" # the only class these functions work on
   ggt <- ggtree::ggtree(ptree, #the new tree as data
-    cex = 1, # branch line thickness
-    aes(color = branch.length), # the color factor is branch length
-    layout = "roundrect") + # style
+                        cex = 1, # branch line thickness
+                        aes(color = branch.length), # the color factor is branch length
+                        layout = "roundrect") + # style
     ggplot2::scale_color_continuous(high = 'green', low = 'darkgreen') + # the colors used for indicating branch length
     ggplot2::theme(legend.position = "left") + # position of the legend
     ggtree::geom_tiplab(align = FALSE, size = 3) + # tips not aligned, font size = 3
