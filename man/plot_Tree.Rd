@@ -10,7 +10,7 @@ plot_Tree(tree)
 This function uses phyloTools to print out a maximum likelihood using phylogenetic data
 }
 \examples{
-plot_Tree <- tree
+ptree <- "phylo" #prinnts out tree
 }
 \keyword{likelihood}
 \keyword{maximum}

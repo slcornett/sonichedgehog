@@ -9,8 +9,5 @@ read_file(sonic.f)
 \description{
 This function allows the user to read in the file data
 }
-\examples{
-# sample code
-}
 \keyword{file,}
 \keyword{read-in}

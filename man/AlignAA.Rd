@@ -13,9 +13,7 @@ AlignAA(Shh_fasta)
 Amino Acid multiple sequence alignment using the MUSCLE algorithm of fasta formatted data
 }
 \examples{
-using the built-in Shh_fasta data of sonic hedgehog signal molecule orthologs
-file <- "link to raw data on git hub"
-pcms_AlignAA(file) # the output of this will be the sequences aligned by the MUSCLE algorithm
+# sample code
 }
 \keyword{AA}
 \keyword{alignment}

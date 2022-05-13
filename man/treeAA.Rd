@@ -13,7 +13,7 @@ treeAA(ptree)
 This function plots a phlogenetic tree
 }
 \examples{
-ptree <- "phylo" #prinnts out tree
+fas_msa <- "MsaMultipleAlignment" phyloAA(fas_msa) #the output is phylo tree data
 }
 \keyword{phylogenetric}
 \keyword{tree}

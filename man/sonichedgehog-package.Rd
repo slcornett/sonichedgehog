@@ -4,9 +4,9 @@
 \name{sonichedgehog-package}
 \alias{sonichedgehog}
 \alias{sonichedgehog-package}
-\title{sonichedgehog: What the Package Does (Title Case)}
+\title{sonichedgehog: Phylogenetic Comparative Methods}
 \description{
-More about what it does (maybe more than one line) Use four spaces when indenting paragraphs within the Description.
+This package embodies the quickness of Sonic the Hedgehog in providing a quick method to conduct phylogenetic compaative analyses. Use four spaces when indenting paragraphs within the Description.
 }
 \seealso{
 Useful links:
