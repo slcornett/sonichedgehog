@@ -18,13 +18,13 @@
 #' @description This function allows the user to read in the file data
 #' @param file
 #' @keywords file, read-in
-#' @export makes the function available for others to use when your package is loaded
-#' @examples # sample code
-
+#' @export # makes the function available for others to use when your package is loaded
 read_file <- function(sonic.f){
+  #require(readr)
   data <-readr::read_csv(sonic.f, col_names = TRUE)
   return(data)
 }
+#' @examples # sample code
 
 # fxn to read in multiple AA sequences----
 #This function was created to read in the fasta data, however it became
@@ -48,9 +48,6 @@ read_file <- function(sonic.f){
 #' @param file a fasta file assigned to a vector in your environment
 #' @keywords multiple sequence alignment, fasta, peptide, AA alignment
 #' @export # makes the function available for others to use when your package is loaded
-#' @examples using the built-in Shh_fasta data of sonic hedgehog signal molecule orthologs
-#' file <- "link to raw data on git hub"
-#' pcms_AlignAA(file) # the output of this will be the sequences aligned by the MUSCLE algorithm
 AlignAA <- function(Shh_fasta){
   class(Shh_fasta) == "character"
   #for reading multiple AA sequences from biostrings package
@@ -60,14 +57,16 @@ AlignAA <- function(Shh_fasta){
   print(fas_msa, showConsensus = TRUE, show = "complete")
   return(fas_msa)
 }
+#' @examples using the built-in Shh_fasta data of sonic hedgehog signal molecule orthologs
+#' file <- "link to raw data on git hub"
+#' pcms_AlignAA(file) # the output of this will be the sequences aligned by the MUSCLE algorithm
 
 # Building a function to calculate the phylogenetic distance between AAs, then plot a tree ----
 #' @title phyloAA
 #' @description This function conducts the multiple alignment and distance calculations for phylogenetic data
-#' @param msa, formatted multiple alignment data
+#' @param msa formatted multiple alignment data
 #' @keywords msa, distance
 #' @export # makes the function available for others to use when your package is loaded
-#' @examples fas_msa <- "MsaMultipleAlignment" phyloAA(fas_msa) #the output is phylo tree data
 phyloAA <- function(fas_msa){ #the input to this function is the out put of the above function
   class(fas_msa) == "MsaAAMultipleAlignment" # the only class these functions work on
   #read aligned data, storing in AAbin format (class will be AAbin) (ape package)
@@ -78,6 +77,7 @@ phyloAA <- function(fas_msa){ #the input to this function is the out put of the 
   tree <- ape::nj(dist_fas_msa) # new tree by neighbor joining method
   return(tree) #  need to be able to extract this from the vector so can modify outgroup
 }
+#' @examples fas_msa <- "MsaMultipleAlignment" phyloAA(fas_msa) #the output is phylo tree data
 
 # Building a function to plot a tree, using a function ggtree----
 #' @title treeAA
@@ -85,7 +85,6 @@ phyloAA <- function(fas_msa){ #the input to this function is the out put of the 
 #' @param ptree, phylo formatted data
 #' @keywords phylogenetric tree
 #' @export # makes the function available for others to use when your package is loaded
-#' @examples ptree <- "phylo" #prinnts out tree
 treeAA <- function(ptree){
   class(ptree) == "phylo" # the only class these functions work on
   ggt <- ggtree::ggtree(ptree, #the new tree as data
@@ -98,7 +97,7 @@ treeAA <- function(ptree){
     ggtree::geom_treescale(x= 0, y = 0, color = "black", fontsize = 3) # the tree scale (number of substitutions)
   return(ggt)
 }
-
+#' @examples ptree <- "phylo" #prinnts out tree
 
 #Plot the maximum likelihood----
 #' @title plot_Tree
@@ -106,7 +105,7 @@ treeAA <- function(ptree){
 #' @param tree
 #' @keywords tree, maximum likelihood
 #' @export # makes the function available for others to use when your package is loaded
-#' @examples plot_Tree <- tree
 plot_Tree <- function(tree){
   phytools::plotTree(tree, fsize=0.8,lwd=1,offset=3) #Plot the ML, set font size, create space so nodes aren't on top of each other
 }
+#' @examples plot_Tree <- tree

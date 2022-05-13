@@ -25,6 +25,11 @@ Given all life on earth diverged from a common ancestor, we need a way to analys
 In this package, we have included a dataset for the Sonic Hedgehog vertebrate orthologs (`sonic`) from the NIH database, as well as the peptide sequences in that dataset as a fasta file. We also have two functions: one for making a phylogenetic tree, and the other for doing a phylogenetic scatterplot.\
 
 ```{r setup}
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+BiocManager::install("ggtree")
+BiocManager::install("msa")
+
 library(sonichedgehog)
 ```
 
@@ -36,14 +41,15 @@ For this project, we have included an example dataset to use with our PCMs packa
 
 ```{r}
 sonic #prints the included sonic dataset
-
+#library(usethis)
 #ldata ready to load also included in the package
-sonic.f # sonic the raw file git link (.f)
+#sonic.f # sonic the raw file git link (.f)
 ```
 
 As an alternative to the built-in `sonic` dataset, you can also use a function to read in the data. The function, read_file(), used in the following section of code reads in the raw/.csv file data necessary for the package. This function makes it easier for the user to load in data and cleans up the code. The function uses the f <- "file_link" & d <- read_csv() code.
 ```{r}
 #use the function to read in the data and create the r dataset
+sonic.f <- "https://raw.githubusercontent.com/slcornett/sonichedgehog/master/data/sonic.csv"
 sonic.csv <- read_file(sonic.f)
 head(sonic.csv) # same as sonic
 ```

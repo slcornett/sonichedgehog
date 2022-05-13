@@ -2,8 +2,8 @@ Package: sonichedgehog
 Type: Package
 Title: Phylogenetic Comparative Methods
 Version: 0.1.0
-Author: Savvy Cornett, Jyhreh Johnson
-Maintainer: slcornett@utexas.edu, jyhrehj@utexas.edu
+Author: Jyhreh Johnson [aut]
+Maintainer: Jyhreh Johnson <jyhrehj@utexas.edu>
 Description: This package embodies the quickness of Sonic the Hedgehog in providing a quick method to conduct phylogenetic compaative analyses. 
     Use four spaces when indenting paragraphs within the Description.
 License: What license is it under?

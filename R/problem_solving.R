@@ -24,7 +24,7 @@ BiocManager::install("msa") # install "msa" package.  will give two prompts, ans
 # adding sonic to dataset
 sonic.f <- "https://raw.githubusercontent.com/slcornett/sonichedgehog/master/data/sonic.csv"
 usethis::use_data(sonic.f, overwrite = TRUE)
-sonic <- readr::read.csv(sonic.f, col_names = TRUE)
+sonic <- readr::read_csv(sonic.f, col_names = TRUE)
 usethis::use_data(sonic, overwrite = TRUE)
 # adding Shh_fasta to dataset
 Shh_fasta.f <- "https://raw.githubusercontent.com/slcornett/sonichedgehog/master/data/Shh_fasta.fasta"
@@ -43,7 +43,8 @@ sonic.csv <- read_file(sonic.f)
 head(sonic.csv) # same as sonic
 
 
-
-
-usethis::use_package("readr")
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+BiocManager::install("ggtree")
+BiocManager::install("msa")
 
