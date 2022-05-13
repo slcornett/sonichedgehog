@@ -21,8 +21,13 @@ knitr::opts_chunk$set(
 # Background
 Given all life on earth diverged from a common ancestor, we need a way to analyse those evolutionary relationships. We can do this by comparing the sequences--nucleotide for DNA and RNA, or amino acid (polypeptide) for protein--of genes from different species. This can be done with whole genomes or otherwise highly conserved genes in the genome to determine the evolutionary relationship of the species, or with just a single gene/protein from multiple species to determine the relationship and amount of conservation for just that gene/protein. These comparisons can be visualized as a phylogenetic tree, which uses relative branch lengths to indicate time since species diverged from their common ancestor based on the number of substitutions (silent/missense/nonsense mutations) within the sequence being compared. Phylogenetic Comparative Analysis or Phylogenetic Comparative Methods (PCMs) are a set of statistical methods used by biologist, geneticist, and anthropologists to analyze phylogenetic trees and track/present species traits (Pennell & Harmon, 2013). Phylogenetic trees allow us to estimate the time for various evolutionary events, and facilitate the analysis of evolutionary processes, such as selection, gene flow, and speciation.\
 
-# Introduction **Updates needed for what's in the package**
-In this package, we have included a dataset for the Sonic Hedgehog vertebrate orthologs (`sonic`) from the NIH database, as well as the peptide sequences in that dataset as a fasta file. We also have two functions: one for making a phylogenetic tree, and the other for doing a phylogenetic scatterplot.\
+# Introduction\
+In this package, we have included a dataset for the Sonic Hedgehog vertebrate orthologs (the dataset: `sonic`) from the NIH database (NIH), as well as the peptide sequences in that dataset as a fasta file (`Shh_fasta` and `Shh_fasta.f`). We also have 5 functions:\
+1) `read_file()`: reading in a .csv from a character vector\
+2) `AlignAA()`: aligns multiple peptide sequences in fasta formatted data\
+3) `phyloAA()`: calculates the pairwise distance between AA and clusters species/sequences with the neighbor joining algorithm\
+4) `treeAA()`: plots a phylogenetic tree, based on {ggtree}\
+5) `plot_Tree()`: plots maximum likelihood phylogenetic tree\
 
 ```{r setup}
 if (!require("BiocManager", quietly = TRUE))
@@ -133,7 +138,7 @@ class(dist_fas_AAbin) #dist matrix
 
 **5. Make a phylogenetic tree using the Neighbor-Joining Method**\
 The Neighbor-Joining algorithm approximates the least squares trees (minimum evolution), and clusters nodes similar to each other and dissimilar from other clusters, based on the distances calculated in the last step (Saitou & Nei, 1987).\
-```{r nj tree}
+```{r nj tree, fig.height=8, fig.width=8}
 tree <- nj(dist_fas_AAbin)
 tree # details about the phylogenetic tree (unrooted)
 class(tree) #phylo 
@@ -150,13 +155,15 @@ tree # updated details about the phylogenetic tree (rooted on the OUTGROUP)
 
 
 **6. Plotting Tree with ggtree**\
-You have many options when it comes to plotting a phylogenetic (class = `phylo`) tree. You may opt for the very simple base `plot()` function.\
-```{r tree plot, fig.height=8, fig.width=8}
+You have many options when it comes to plotting a phylogenetic (class = `phylo`) tree. You may opt for the very simple base `plot()` function...\
+```{r plot tree, fig.height=8, fig.width=8}
 library(ggtree)
 library(ggplot2)
 # base R plot
 plot(tree)
-
+```
+... or you can customize a tree to be green using {ggtree}\
+```{r ggplot tree, fig.height=8, fig.width=8}
 # ggtree, an extension package of ggplot2
 ggt <- ggtree(tree, cex = 1, aes(color = branch.length), layout = "roundrect") +
   scale_color_continuous(high = 'green', low = 'darkgreen') + 
@@ -169,16 +176,20 @@ ggt
 
 
 ## **Using {sonichedgehog} functions**\
-So many steps, right? Wouldn't it be nice to do less steps and arrive at the same endpoint? Here we are using the `Shh_fasta.f`, file (class = "character") version of `Shh_fasta` included in this package to run it through the {sonichedgehog} function `AlignAA()`. This function reads in converts the raw fasta file to an AAstring, does a multiple sequence alignment using the MUSCLE algorithm on the fasta data, then prints the complete set of aligned AA seqeuences with the species names and consensus sequence. Essentially, this combines by-hand steps 1-2. 
-```{r pat}
+So many steps, right? Wouldn't it be nice to do less steps and arrive at the same endpoint? Now you can!\
+### Align the Peptide Sequences\
+Here we are using the `Shh_fasta.f`, file (class = "character") version of `Shh_fasta` included in this package to run it through the {sonichedgehog} function `AlignAA()`. This function reads in converts the raw fasta file to an AAstring, does a multiple sequence alignment using the MUSCLE algorithm on the fasta data, then prints the complete set of aligned AA seqeuences with the species names and consensus sequence. Essentially, this combines by-hand steps 1-2. 
+```{r AlignAA}
+Shh_fasta.f # character vector containing the git link
 # read in the vector the raw git link or dataset is assigned to
 pat <- AlignAA(Shh_fasta.f)
 pat # prints the MUSCLE alignment 
 class(pat) # "MsaAAMultipleAlignment"
 ```
 
-### Running and Plotting PCMs
-```{r}
+### Running and Plotting PCMs\
+**Distance and NJ with `phyloAA()` function**
+```{r phyloAA}
 ptree <- phyloAA(pat)
 ptree 
 class(ptree)
@@ -193,14 +204,14 @@ is.rooted(ptree) #TRUE
 ptree # updated details about the phylogenetic tree (rooted on the OUTGROUP)
 ```
 
-**Plotting with treeAA function**
-```{r}
+**Plotting with `treeAA()` function**
+```{r treeAA, fig.height=8, fig.width=8}
 tree_plot <- treeAA(ptree)
 tree_plot
 ```
 
-**Plotting Maximum Likelihood with plotTree function**
-```{r}
+**Plotting Maximum Likelihood with `plotTree()` function**
+```{r plot_Tree, fig.height=8, fig.width=8}
 pt <- plot_Tree(tree)
 ```
 
